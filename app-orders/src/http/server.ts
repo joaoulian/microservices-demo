@@ -1,3 +1,4 @@
+import "@opentelemetry/auto-instrumentations-node/register";
 import { fastify } from "fastify";
 import { fastifyCors } from "@fastify/cors";
 import { randomUUID } from "node:crypto";
@@ -8,7 +9,7 @@ import {
 } from "fastify-type-provider-zod";
 import z from "zod";
 import { db } from "../db/client.ts";
-import { schema } from "../db/schemas/index.ts";
+import { schema } from "../db/schema/index.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
