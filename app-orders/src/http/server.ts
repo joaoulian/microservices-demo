@@ -25,7 +25,7 @@ app.get("/health", () => {
 });
 
 app.post(
-  "/orders",
+  "/create",
   {
     schema: {
       body: z.object({
