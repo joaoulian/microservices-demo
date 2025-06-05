@@ -11,6 +11,7 @@ import z from "zod";
 import { db } from "../db/client.ts";
 import { schema } from "../db/schema/index.ts";
 import { tracer } from "../tracer/tracer.ts";
+import { dispatchOrderCreated } from "../broker/messages/order-created.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -37,10 +38,18 @@ app.post(
     const span = tracer.startSpan("uuid-calculation");
     const orderId = randomUUID();
     span.end();
+    const customerId = "B9176D35-7276-4255-A323-D825CAEE03B5";
     await db.insert(schema.orders).values({
       id: orderId,
-      customerId: "B9176D35-7276-4255-A323-D825CAEE03B5",
+      customerId: customerId,
       amount,
+    });
+    dispatchOrderCreated({
+      orderId,
+      amount,
+      customer: {
+        id: customerId,
+      },
     });
     return reply.status(201).send();
   }
