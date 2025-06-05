@@ -10,6 +10,7 @@ import {
 import z from "zod";
 import { db } from "../db/client.ts";
 import { schema } from "../db/schema/index.ts";
+import { tracer } from "../tracer/tracer.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -33,7 +34,9 @@ app.post(
   },
   async (request, reply) => {
     const { amount } = request.body;
+    const span = tracer.startSpan("uuid-calculation");
     const orderId = randomUUID();
+    span.end();
     await db.insert(schema.orders).values({
       id: orderId,
       customerId: "B9176D35-7276-4255-A323-D825CAEE03B5",
