@@ -5,6 +5,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import z from "zod";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -16,6 +17,24 @@ app.register(fastifyCors, { origin: "*" });
 app.get("/health", () => {
   return "OK";
 });
+
+app.post(
+  "/orders",
+  {
+    schema: {
+      body: z.object({
+        amount: z.coerce.number(),
+      }),
+    },
+  },
+  async (request, reply) => {
+    const { amount } = request.body;
+    console.log("Creating an order with amount", amount);
+    return reply.status(200).send({
+      message: "Order created successfully",
+    });
+  }
+);
 
 app.listen({ host: "0.0.0.0", port: 3333 }).then(() => {
   console.log("[Orders] HTTP Server running!");
