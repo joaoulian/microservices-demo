@@ -4,6 +4,8 @@ import { cluster } from "../cluster";
 import { ordersDockerImage } from "../images/orders-image";
 import { appLoadBalancer } from "../load-balancer";
 import { amqpListener } from "./rabbitmq-service";
+import { executionRole } from "../roles";
+// import { validatedCert } from '../certificates'
 
 const ordersTargetGroup = appLoadBalancer.createTargetGroup("orders-target", {
   port: 3333,
@@ -11,6 +13,10 @@ const ordersTargetGroup = appLoadBalancer.createTargetGroup("orders-target", {
   healthCheck: {
     path: "/health",
     protocol: "HTTP",
+    healthyThreshold: 3,
+    unhealthyThreshold: 3,
+    timeout: 5,
+    interval: 10,
   },
 });
 
@@ -23,6 +29,17 @@ export const ordersHttpListener = appLoadBalancer.createListener(
   }
 );
 
+// const ordersHttpsListener = appLoadBalancer.createListener(
+//   "orders-https-listener",
+//   {
+//     port: 443,
+//     targetGroup: ordersTargetGroup,,
+//     protocol: "HTTPS",
+//     sslPolicy: "ELBSecurityPolicy-2016-08",
+//     certificateArn: validatedCert.certificateArn,
+//   }
+// );
+
 export const ordersService = new awsx.classic.ecs.FargateService(
   "fargate-orders",
   {
@@ -30,6 +47,7 @@ export const ordersService = new awsx.classic.ecs.FargateService(
     desiredCount: 1,
     waitForSteadyState: false,
     taskDefinitionArgs: {
+      executionRole,
       container: {
         image: ordersDockerImage.ref,
         cpu: 256,
