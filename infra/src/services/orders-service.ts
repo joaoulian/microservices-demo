@@ -1,8 +1,9 @@
 import * as awsx from "@pulumi/awsx";
-
+import * as pulumi from "@pulumi/pulumi";
 import { cluster } from "../cluster";
 import { ordersDockerImage } from "../images/orders-image";
 import { appLoadBalancer } from "../load-balancer";
+import { amqpListener } from "./rabbitmq-service";
 
 const ordersTargetGroup = appLoadBalancer.createTargetGroup("orders-target", {
   port: 3333,
@@ -35,6 +36,10 @@ export const ordersService = new awsx.classic.ecs.FargateService(
         memory: 512,
         portMappings: [ordersHttpListener],
         environment: [
+          {
+            name: "BROKER_URL",
+            value: pulumi.interpolate`amqp://admin:admin@${amqpListener.endpoint.hostname}:${amqpListener.endpoint.port}`,
+          },
           {
             name: "OTEL_SERVICE_NAME",
             value: "orders",
