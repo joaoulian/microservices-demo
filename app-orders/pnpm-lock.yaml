@@ -14,6 +14,15 @@ importers:
       '@opentelemetry/api':
         specifier: 1.9.0
         version: 1.9.0
+      '@opentelemetry/auto-instrumentations-node':
+        specifier: ^0.60.0
+        version: 0.60.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.0.1(@opentelemetry/api@1.9.0))
+      '@opentelemetry/sdk-node':
+        specifier: ^0.202.0
+        version: 0.202.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-node':
+        specifier: ^2.0.1
+        version: 2.0.1(@opentelemetry/api@1.9.0)
       amqplib:
         specifier: ^0.10.8
         version: 0.10.8
@@ -33,15 +42,6 @@ importers:
         specifier: ^3.25.51
         version: 3.25.51
     devDependencies:
-      '@opentelemetry/auto-instrumentations-node':
-        specifier: 0.60.0
-        version: 0.60.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.0.1(@opentelemetry/api@1.9.0))
-      '@opentelemetry/sdk-node':
-        specifier: 0.202.0
-        version: 0.202.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-node':
-        specifier: 2.0.1
-        version: 2.0.1(@opentelemetry/api@1.9.0)
       '@tsconfig/node22':
         specifier: ^22.0.2
         version: 22.0.2
